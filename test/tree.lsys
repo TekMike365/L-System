@@ -1,0 +1,14 @@
+;       Fractal tree
+
+axiom FX    ; defines the starting axiom
+
+.left +FX
+.right -FX
+
+; definition of rules
+rules
+    X -> >[.left@].right@      ; 'F' turns into '>[-FX]+FX'
+
+; settings
+angle 40
+lfac 0.72

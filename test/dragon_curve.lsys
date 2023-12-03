@@ -1,0 +1,9 @@
+;       Dragon Curve
+
+axiom FX
+
+rules
+    X -> X+XF+,
+    Y -> -FX-Y
+
+angle 90

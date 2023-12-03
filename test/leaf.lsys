@@ -1,0 +1,13 @@
+;       Leaf
+
+axiom a
+
+rules
+    F -> >F<,
+    a -> F[+x]Fb,
+    b -> F[-y]Fa,
+    x -> a,
+    y -> b
+
+angle 45
+lfac 1.36

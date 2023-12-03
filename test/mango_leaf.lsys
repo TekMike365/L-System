@@ -1,0 +1,11 @@
+;       Mango Leaf
+
+axiom Y---Y
+
+.l {F-F}
+
+rules
+    X -> .l.l--[--X].l.l--.l.l--,
+    Y -> f-F+X+F-fY
+
+angle 60

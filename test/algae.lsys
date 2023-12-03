@@ -1,0 +1,8 @@
+;       Algae
+
+axiom F
+
+rules
+    F -> FF+[+F-F-F]-[-F+F+F]
+
+angle 22.5
