@@ -1,16 +1,17 @@
-# L-System
+# L-System 0.1
 
 A small project, visualizer of [fractals](https://en.wikipedia.org/wiki/Fractal) described in [Lindenmayer System](https://en.wikipedia.org/wiki/L-system), hence the name.
 
-* [L-System scripting language](#l-system-scripting-language)
-    * [Comments](#comments)
-    * [Special Characters](#special-characters)
-    * [Axiom](#axiom)
-    * [Rules](#rules)
-    * [Variables](#variables)
-    * [Settings](#settings)
-    * [Example Script](#example-code)
-* [Running the script](#running-the-script)
+- [L-System 0.1](#l-system-01)
+  - [L-System scripting language](#l-system-scripting-language)
+    - [Comments](#comments)
+    - [Special Characters](#special-characters)
+    - [Axiom](#axiom)
+    - [Rules](#rules)
+    - [Variables](#variables)
+    - [Settings](#settings)
+    - [Example script](#example-script)
+  - [Running the script](#running-the-script)
 
 \* This project is work in progress. What you see now, will change at some point.
 
