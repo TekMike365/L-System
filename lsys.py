@@ -8,12 +8,7 @@ import math
 import tkinter
 import copy
 
-from src import Vec2
-from src import Log
-from src import ParserData
-from src import parse
-from src import Window
-
+from src import *
 
 # TODO combine calculation of size with generating points (liear scaling when drawing)
 # TODO add iterations setting
@@ -114,12 +109,7 @@ def main(args):
     parsed = parse(source)
     Log.info(parsed)
 
-    # generating structure
-    iterations = 9
-    structure = parsed.axiom
-    for _ in range(iterations):
-        for rule in parsed.rules.keys():
-            structure = structure.replace(rule, parsed.rules[rule])
+    structure = generate_structure(parsed, 9)
 
     # generating points
     stack = []
@@ -136,7 +126,7 @@ def main(args):
         "point": Vec2(0.0, 0.0)
     }
 
-    for cmd in structure:
+    for cmd in structure.string:
         if cmd == "F" or cmd == "f":      # move forward
             change = Vec2(data["length"], 0.0)
             change.rotate((90.0 + data["angle"]) * math.pi / 180)
@@ -193,7 +183,7 @@ def main(args):
 
     data["cell_points"] = [copy.deepcopy(data["point"])]
     data["cell_data"].set(Cell.Data.WIDTH, 3)
-    for cmd in structure:
+    for cmd in structure.string:
         if cmd == "F":      # move forward, draw a line
             data["cell_data"].set(Cell.Data.DRAW, True)
             change = Vec2(data["length"], 0.0)
