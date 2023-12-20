@@ -9,6 +9,7 @@ import math
 import tkinter
 import copy
 
+from src import Vec2
 
 # TODO combine calculation of size with generating points (liear scaling when drawing)
 # TODO add iterations setting
@@ -40,39 +41,6 @@ class Log:
     @staticmethod
     def error(msg) -> None:
         print(f"{Fore.RED}[ERROR]: {str(msg)}{Fore.RESET}")
-
-
-class vec2:
-    def __init__(self, x, y) -> None:
-        self.x = x
-        self.y = y
-
-    # rotating a vector v by a:
-    # x = v.x * cos(a) - v.y * sin(a)
-    # y = v.x * sin(a) + v.y * cos(a)
-    def rotate(self, rad) -> None:
-        x = self.x * math.cos(rad) - self.y * math.sin(rad)
-        y = self.x * math.sin(rad) + self.y * math.cos(rad)
-        self.x = x
-        self.y = y
-
-    def add(self, vec) -> None:
-        self.x += vec.x
-        self.y += vec.y
-
-    def scale(self, val) -> None:
-        self.x *= val
-        self.y += val
-
-    def get_length(self) -> float:
-        return math.sqrt(self.x**2 + self.y**2)
-
-    def to_ivec2(self) -> None:
-        self.x = int(self.x)
-        self.y = int(self.y)
-
-    def __str__(self) -> str:
-        return f"vec2[{self.x}, {self.y}]"
 
 
 class Cell:
@@ -221,12 +189,12 @@ def main(args):
         "angle": 0.0,
         "length": 1.0,
         "swap": 1,
-        "point": vec2(0.0, 0.0)
+        "point": Vec2(0.0, 0.0)
     }
 
     for cmd in structure:
         if cmd == "F" or cmd == "f":      # move forward
-            change = vec2(data["length"], 0.0)
+            change = Vec2(data["length"], 0.0)
             change.rotate((90.0 + data["angle"]) * math.pi / 180)
             data["point"].add(change)
 
@@ -270,8 +238,8 @@ def main(args):
     cells = []
 
     data = {
-        "point": vec2(0.0, 0.0),
-        "cell_points": [vec2(0.0, 0.0)],
+        "point": Vec2(0.0, 0.0),
+        "cell_points": [Vec2(0.0, 0.0)],
         "cell_data": Cell.Data(),
         "length": scale_factor,
         "angle": 0.0,
@@ -284,7 +252,7 @@ def main(args):
     for cmd in structure:
         if cmd == "F":      # move forward, draw a line
             data["cell_data"].set(Cell.Data.DRAW, True)
-            change = vec2(data["length"], 0.0)
+            change = Vec2(data["length"], 0.0)
             change.rotate((90.0 + data["angle"]) * math.pi / 180)
             data["point"].add(change)
             data["cell_points"].append(copy.deepcopy(data["point"]))
@@ -294,7 +262,7 @@ def main(args):
                 data["cell_points"] = [copy.deepcopy(data["point"])]
         elif cmd == "f":    # move forward, no line
             data["cell_data"].set(Cell.Data.DRAW, False)
-            change = vec2(data["length"], 0.0)
+            change = Vec2(data["length"], 0.0)
             change.rotate((90.0 + data["angle"]) * math.pi / 180)
             data["point"].add(change)
             data["cell_points"].append(copy.deepcopy(data["point"]))
