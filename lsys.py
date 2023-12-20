@@ -12,6 +12,7 @@ from src import Vec2
 from src import Log
 from src import ParserData
 from src import parse
+from src import Window
 
 
 # TODO combine calculation of size with generating points (liear scaling when drawing)
@@ -258,25 +259,20 @@ def main(args):
     TRANSFORM_Y = int(-1 * bottom_most * scale_factor + WND_PADDING_H - WND_HEIGHT)
 
     # drawing
-    wnd = tkinter.Tk()
-    wnd.minsize(WND_WIDTH, WND_HEIGHT)
-    wnd.maxsize(WND_WIDTH, WND_HEIGHT)
-
-    canvas = tkinter.Canvas(master=wnd, width=WND_WIDTH, height=WND_HEIGHT, background="white")
-    canvas.pack()
+    wnd = Window(WND_WIDTH, WND_HEIGHT)
 
     for cell in cells:
         for point in cell.points:
-            point.to_ivec2()
+            point.x += TRANSFORM_X
+            point.y += TRANSFORM_Y
+
         width = cell.data.get(Cell.Data.WIDTH)
         if cell.data.get(Cell.Data.DOT):
-            canvas.create_oval(cell.points[0].x + TRANSFORM_X - width, -1 * (cell.points[0].y - width + TRANSFORM_Y),
-                               cell.points[0].x + TRANSFORM_X + width, -1 * (cell.points[0].y + width + TRANSFORM_Y),
-                               fill="lime", width=0)
+            wnd.draw_point(cell.points[0], width, "lime")
         elif cell.data.get(Cell.Data.POLYGON):
-            canvas.create_polygon([(e.x + TRANSFORM_X, -1 * (e.y + TRANSFORM_Y)) for e in cell.points], fill="cyan", width=0)
+            wnd.draw_polygon(cell.points, "cyan")
         else:
-            canvas.create_line([(e.x + TRANSFORM_X, -1 * (e.y + TRANSFORM_Y)) for e in cell.points], width=width)
+            wnd.draw_line(cell.points[0], cell.points[1], width, "black")
 
     wnd.mainloop()
 
