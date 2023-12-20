@@ -10,6 +10,8 @@ import copy
 
 from src import Vec2
 from src import Log
+from src import ParserData
+from src import parse
 
 
 # TODO combine calculation of size with generating points (liear scaling when drawing)
@@ -108,61 +110,15 @@ def main(args):
         Log.warning("Couldn't open file.")
         return 1
 
-    # parsing
-    axiom = ""
-    rules = {}
-    settings = {
-        "angle": 60.0,
-        "winc": 0,
-        "lfac": 1.0,
-        "ainc": 0
-    }
-
-    source = re.sub(";.*$", "", source, flags=re.RegexFlag.MULTILINE)   # remove comments
-    source = re.sub("\s+", " ", source, flags=re.RegexFlag.MULTILINE)   # compact spaces
-
-    # useful shit
-    re_keywords = "axiom|rules|angle|winc|lfac|ainc"
-    re_character = "[a-zA-Z+\-|[\]#!@{}<>&()]"
-    re_variable = "\.[a-zA-Z_]\w*"
-    expression = f"(?:{re_variable}|{re_character})+"  # selects kinda everything
-
-    # substituting variables
-    vars = re.findall(f" {re_variable} {expression}", source)
-    vars = [e for e in vars if re.search(re_keywords, e) is None]
-    for var in vars:
-        name, value = var.split()
-        source = re.sub(var, "", source)
-        source = re.sub(f"\{name}", value, source)
-
-    # tokenisation or smthn
-
-    # getting the axiom
-    axiom = re.search(f"(axiom) ({expression})", source).group(2)
-
-    # getting the rules
-    src_rules = re.search(f"(rules )(([a-zA-Z] -> {expression}(, )?)+)", source).group(2)
-    src_rules = re.split(", ", src_rules)
-    for rule in src_rules:
-        key, val = rule.split(" -> ")
-        rules[key] = val
-
-    # getting the settings
-    for setting in settings.keys():
-        sett = re.search(f"({setting}) (\d+(\.\d+)?)", source)
-        if sett is not None:
-            settings[setting] = float(sett.group(2))
-
-    Log.info(f"axiom: {axiom}")
-    Log.info(f"rules: {rules}")
-    Log.info(f"settings: {settings}")
+    parsed = parse(source)
+    Log.info(parsed)
 
     # generating structure
     iterations = 9
-    structure = axiom
+    structure = parsed.axiom
     for _ in range(iterations):
-        for rule in rules.keys():
-            structure = structure.replace(rule, rules[rule])
+        for rule in parsed.rules.keys():
+            structure = structure.replace(rule, parsed.rules[rule])
 
     # generating points
     stack = []
@@ -172,7 +128,7 @@ def main(args):
     left_most = 0.0
 
     data = {
-        "turning_angle": settings["angle"],
+        "turning_angle": parsed.angle,
         "angle": 0.0,
         "length": 1.0,
         "swap": 1,
@@ -200,15 +156,15 @@ def main(args):
         elif cmd == "]":    # pop load from stack
             data = stack.pop()
         elif cmd == ">":    # multiply line length
-            data["length"] *= settings["lfac"]
+            data["length"] *= parsed.lfac
         elif cmd == "<":    # devide line length
-            data["length"] /= settings["lfac"]
+            data["length"] /= parsed.lfac
         elif cmd == "&":    # swap the meaning of + and -
             data["swap"] *= -1
         elif cmd == "(":    # decrement turning angle
-            data["turning_angle"] += settings["ainc"]
+            data["turning_angle"] += parsed.ainc
         elif cmd == ")":    # increase turning angle
-            data["turning_angle"] -= settings["ainc"]
+            data["turning_angle"] -= parsed.ainc
 
     # calculate size
     normal_height = top_most - bottom_most
@@ -230,7 +186,7 @@ def main(args):
         "cell_data": Cell.Data(),
         "length": scale_factor,
         "angle": 0.0,
-        "turning_angle": settings["angle"],
+        "turning_angle": parsed.angle,
         "swap": 1
     }
 
@@ -270,9 +226,9 @@ def main(args):
             data["cell_points"].pop()
             data["cell_points"].append(copy.deepcopy(data["point"]))
         elif cmd == "#":    # increment width
-            data["cell_data"].set(Cell.Data.WIDTH, int(data["cell_data"].get(Cell.Data.WIDTH) + settings["winc"]))
+            data["cell_data"].set(Cell.Data.WIDTH, int(data["cell_data"].get(Cell.Data.WIDTH) + parsed.winc))
         elif cmd == "!":    # decrement width
-            data["cell_data"].set(Cell.Data.WIDTH, int(data["cell_data"].get(Cell.Data.WIDTH) - settings["winc"]))
+            data["cell_data"].set(Cell.Data.WIDTH, int(data["cell_data"].get(Cell.Data.WIDTH) - parsed.winc))
         elif cmd == "@":    # draw a dot r = line_width
             # save shit
             data["cell_data"].set(Cell.Data.DOT, True)
@@ -287,16 +243,16 @@ def main(args):
             data["cell_points"] = [copy.deepcopy(data["point"])]
             data["cell_data"].set(Cell.Data.POLYGON, False)
         elif cmd == ">":    # multiply line length
-            data["length"] *= settings["lfac"]
+            data["length"] *= parsed.lfac
             pass
         elif cmd == "<":    # devide line length
-            data["length"] /= settings["lfac"]
+            data["length"] /= parsed.lfac
         elif cmd == "&":    # swap the meaning of + and -
             data["swap"] *= -1
         elif cmd == "(":    # decrement turning angle
-            data["turning_angle"] -= settings["ainc"]
+            data["turning_angle"] -= parsed.ainc
         elif cmd == ")":    # increase turning angle
-            data["turning_angle"] += settings["ainc"]
+            data["turning_angle"] += parsed.ainc
 
     TRANSFORM_X = int(-1 * left_most * scale_factor + WND_PADDING_W)
     TRANSFORM_Y = int(-1 * bottom_most * scale_factor + WND_PADDING_H - WND_HEIGHT)
