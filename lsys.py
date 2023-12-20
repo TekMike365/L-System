@@ -2,7 +2,6 @@
 
 from sys import argv
 from os import path
-from colorama import Fore, Style
 
 import re
 import math
@@ -10,6 +9,8 @@ import tkinter
 import copy
 
 from src import Vec2
+from src import Log
+
 
 # TODO combine calculation of size with generating points (liear scaling when drawing)
 # TODO add iterations setting
@@ -27,20 +28,6 @@ WND_WIDTH = int(640 * 1.5)
 WND_HEIGHT = int(480 * 1.5)
 WND_PADDING_W = WND_WIDTH * 0.05
 WND_PADDING_H = WND_HEIGHT * 0.05
-
-
-class Log:
-    @staticmethod
-    def info(msg) -> None:
-        print(f"{Style.DIM}[INFO]: {str(msg)}{Style.RESET_ALL}")
-
-    @staticmethod
-    def warning(msg) -> None:
-        print(f"{Fore.YELLOW}[WARNING]: {str(msg)}{Fore.RESET}")
-
-    @staticmethod
-    def error(msg) -> None:
-        print(f"{Fore.RED}[ERROR]: {str(msg)}{Fore.RESET}")
 
 
 class Cell:
