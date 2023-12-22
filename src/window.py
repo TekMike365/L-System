@@ -6,12 +6,13 @@ from .vec2 import Vec2
 
 class Window:
     
-    def __init__(self, width, height, caption="lsys.py") -> None:
+    def __init__(self, width, height, title="lsys.py") -> None:
         self.width = width
         self.height = height
-        self.caption = caption
+        self.title = title
 
         self._wnd = tkinter.Tk()
+        self._wnd.title(title)
         self._wnd.minsize(width, height)
         self._wnd.maxsize(width, height)
 
