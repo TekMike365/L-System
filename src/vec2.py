@@ -20,7 +20,7 @@ class Vec2:
 
     def scale(self, val) -> None:
         self.x *= val
-        self.y += val
+        self.y *= val
 
     def get_length(self) -> float:
         return math.sqrt(self.x**2 + self.y**2)
