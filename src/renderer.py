@@ -24,6 +24,7 @@ class RenderData:
 def generate_renderdata(struct: Structure) -> RenderData:
     data = {
         "pos": Vec2(0.0, 0.0),
+        "posi": 0, # position index
         "alpha": 0.0,
         "len": 1.0,
         "width": 3,
@@ -31,10 +32,11 @@ def generate_renderdata(struct: Structure) -> RenderData:
         "angle": copy.deepcopy(struct.data.angle),
         "winc": copy.deepcopy(struct.data.winc),
         "ainc": copy.deepcopy(struct.data.ainc),
-        "lfac": copy.deepcopy(struct.data.lfac)
+        "lfac": copy.deepcopy(struct.data.lfac),
     }
 
-    curr_point = 0
+    prev_pos = 0
+    curr_pos = 0
     stack = []
     polygon = False
 
@@ -43,23 +45,24 @@ def generate_renderdata(struct: Structure) -> RenderData:
 
     for cmd in struct.string:
         if cmd == "F" or cmd == "f":
-            change = Vec2(data["len"], 0.0)
-            change.rotate(90 + data["alpha"] * math.pi / 180)
+            prev_pos = data["posi"]
+            change = Vec2(0.0, data["len"])
+            change.rotate(data["alpha"] * math.pi / 180)
             data["pos"].add(change)
-
             vertices.append(copy.deepcopy(data["pos"]))
-            curr_point += 1
+            curr_pos = len(vertices) - 1
+            data["posi"] = curr_pos
 
         if cmd == "F": # move forward without drawing
             if polygon:
-                indexes_data[-1].indexes.append(curr_point)
+                indexes_data[-1].indexes.append(curr_pos)
                 continue
-            indexes_data.append(IndexData(data["width"], [curr_point - 1, curr_point]))
+            indexes_data.append(IndexData(data["width"], [prev_pos, curr_pos]))
         elif cmd == "f": # move forward without drawing
             if polygon:
                 continue
         elif cmd == "+": # increments by an angle
-            data["alpha"] += data["swap"] * data["angle"]
+            data["alpha"] +=data["swap"] * data["angle"]
         elif cmd == "-": # decrements by an angle
             data["alpha"] -= data["swap"] * data["angle"]
         elif cmd == "|": # reverse direction (turn 180)
@@ -79,11 +82,11 @@ def generate_renderdata(struct: Structure) -> RenderData:
         elif cmd == ")": # increase turning angle
             data["angle"] -= data["ainc"]
         elif cmd == "@":    # draw a dot r = line_width
-            indexes_data.append(IndexData(data["width"], indexes=[curr_point]))
+            indexes_data.append(IndexData(data["width"], indexes=[curr_pos]))
         elif cmd == "{": # Open a polygon
             polygon = True
             indexes_data.append(IndexData(data["width"]))
-            indexes_data[-1].indexes.append(curr_point)
+            indexes_data[-1].indexes.append(curr_pos)
         elif cmd == "}": # Close a polygon and fill with color (no setting for now)
             polygon = False
 
