@@ -131,7 +131,7 @@ def render(wnd: Window, struct: Structure) -> None:
     for e in data.index_data:
         if len(e.indexes) == 1: # point
             point = data.vertices[e.indexes[0]]
-            wnd.draw_point(point, e.width, "lime")
+            wnd.draw_point(point, e.width * 2, "lime")
         elif len(e.indexes) == 2: # line
             p1 = data.vertices[e.indexes[0]]
             p2 = data.vertices[e.indexes[1]]
