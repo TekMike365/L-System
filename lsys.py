@@ -29,11 +29,23 @@ def main(args):
         Log.error("Couldn't open file.")
         return 1
 
+    # command options
+    complexity = 4
+
+    if len(args) > 2:
+        i = 2
+        while i < len(args):
+            if args[i] == "-c": i += 1
+                if i > len(args) - 1:
+                    return 1
+                complexity = int(args[i])
+            i += 1
+
     # parsing
     parsed = parse(source)
     Log.info(parsed)
 
-    structure = generate_structure(parsed, 4)
+    structure = generate_structure(parsed, complexity)
 
     # drawing
     wnd = Window(WND_WIDTH, WND_HEIGHT)
