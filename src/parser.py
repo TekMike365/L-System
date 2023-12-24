@@ -37,8 +37,8 @@ def parse(text: str) -> ParserData:
 
     source = re.sub("\s+", " ", source)    # compact spaces
     # small stuff
-    source = re.sub(" -> ", "->", source)
-    source = re.sub("( ,)|(, )", ",", source)
+    source = re.sub(" ?-> ?", "->", source)
+    source = re.sub(" ?, ?", ",", source)
  
     # parsing
     data = ParserData()

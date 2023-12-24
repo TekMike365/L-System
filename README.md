@@ -1,11 +1,11 @@
-# L-System 0.1
+# L-System v0.2
 
 A small project, visualizer of [fractals](https://en.wikipedia.org/wiki/Fractal) described in [Lindenmayer System](https://en.wikipedia.org/wiki/L-system), hence the name.
 
 - [L-System 0.1](#l-system-01)
   - [L-System scripting language](#l-system-scripting-language)
     - [Comments](#comments)
-    - [Special Characters](#special-characters)
+    - [Special Characters](#commands)
     - [Axiom](#axiom)
     - [Rules](#rules)
     - [Variables](#variables)
@@ -13,13 +13,13 @@ A small project, visualizer of [fractals](https://en.wikipedia.org/wiki/Fractal)
     - [Example script](#example-script)
   - [Running the script](#running-the-script)
 
-\* This project is work in progress. What you see now, will change at some point.
-
 ## L-System scripting language
 
-* extension: .lsys
+L-System is a system that describes fractals using a short notation. It composes of (axiom)[#axiom], (rules)[#rules] and (settings)[#settings].
 
-L-System is a system that describes fractals using a short notation. This scripting language is almost a one to one representation.
+```
+extension.lsys
+```
 
 ### Comments
 
@@ -27,45 +27,43 @@ L-System is a system that describes fractals using a short notation. This script
 ; I think this is self explainatory.
 ```
 
-### Special Characters
-
-L-System uses characters to represent many acions. Here are all the symbols explained.
+### Commands
 
 ```
 Character        Meaning
-==========================================================================
+======================================================================
    F             Move forward by line length drawing a line
    f             Move forward by line length without drawing a line
-   +             Turn left by turning angle <angle>
-   -             Turn right by turning angle <angle>
+   +             Turn left by angle
+   -             Turn right by angle
    |             Reverse direction (ie: turn by 180 degrees)
    [             Push current drawing state onto stack
    ]             Pop current drawing state from the stack
-   #             Increment the line width by line width increment <winc>
-   !             Decrement the line width by line width increment <winc>
-   @             Draw a dot with line width radius
+   #             Increment line width
+   !             Decrement line width
+   @             Draw a dot
    {             Open a polygon
-   }             Close a polygon and fill it with fill colour
-   >             Multiply the line length by the line length factor <lfac>
-   <             Divide the line length by the line length factor <lfac>
+   }             Close a polygon
+   >             Multiply line length by a factor
+   <             Divide line length by a factor
    &             Swap the meaning of + and -
-   (             Decrement turning angle by turning angle increment <ainc>
-   )             Increment turning angle by turning angle increment <ainc>
+   (             Decrement turning
+   )             Increment turning
 ```
 
-Any lowercase or uppercase letters that are not __F__ or __f__ are also a special characters and they can be used as place holders or fractal expandors ([more](#rules)).
+Any lowercase or uppercase letters that are not __F__ or __f__ are used as place holders ([more](#rules)).
 
 ### Axiom
 
-__Axiom__ describes the starting characters.
+__Axiom__ describes the starting set of commands. It is the starting condition which gets recursively replaced. How are commands replaced defines a set of [rules](#rules)
 
 ```
-axiom <expr>  ; <expr> is any set of characters
+axiom <expr>  ; <expr> is any set of commands
 ```
 
 ### Rules
 
-__Rules__ describe how the fractal grows, or how are the characters replaced.
+__Rules__ describe how fractals grow, how are commands replaced.
 
 ```
 rules
@@ -73,13 +71,19 @@ rules
     Y -> -FX    ; 'Y' gets replaced by '-FX'
 ```
 
-### Variables
-
-Yes, variables. Even if this language doesn't seem like it needs variables, I've added them anyways. Variables are always usefull.
+you can even write it on a single line,
 
 ```
-; variables start with a dot
-.name <expr>     ; <expr> any set of special characters
+rules X -> +FX, Y -> -FX
+```
+
+### Variables
+
+Yes, variables. Even if this language doesn't seem like it needs variables, I've added them anyways.
+Variables start with a dot ``.name`` followed by space and a set of commands.
+
+```
+.name <expr>     ; <expr> is any set of commands
 
 axiom F.name+    ; usage
 ```
@@ -95,15 +99,13 @@ lfac    ; line factor (>, <)
 ainc    ; angle increment ('(', ')')
 ```
 
-You use them simply.
+Here is how you use them
 
 ```
 <setting> <value>
 ```
 
 ### Example script
-
-An example code of a fractal tree.
 
 ```
 ;       Fractal Tree
@@ -125,5 +127,11 @@ lfac 0.72
 ## Running the script
 
 ```shell
-python lsys.py <script.lsys>
+python3 lsys.py <script.lsys>
+```
+
+Requires tkinter.
+
+```shell
+pip install tk
 ```
