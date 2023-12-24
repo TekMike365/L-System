@@ -68,13 +68,9 @@ def main(args):
                 complexity = int(args[i])
             i += 1
 
-    # parsing
-    parsed = parse(source)
-    Log.info(parsed)
+    data = parse(source)
+    structure = generate_structure(data, complexity)
 
-    structure = generate_structure(parsed, complexity)
-
-    # drawing
     wnd = Window(WND_WIDTH, WND_HEIGHT)
     render(wnd, structure)
     wnd.mainloop()

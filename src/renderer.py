@@ -27,7 +27,7 @@ def generate_renderdata(struct: Structure) -> RenderData:
         "posi": 0, # position index
         "alpha": 0.0,
         "len": 1.0,
-        "width": 3,
+        "width": copy.deepcopy(struct.data.width),
         "swap": 1,
         "angle": copy.deepcopy(struct.data.angle),
         "winc": copy.deepcopy(struct.data.winc),
@@ -131,14 +131,14 @@ def render(wnd: Window, struct: Structure) -> None:
     for e in data.index_data:
         if len(e.indexes) == 1: # point
             point = data.vertices[e.indexes[0]]
-            wnd.draw_point(point, e.width * 2, "lime")
+            wnd.draw_point(point, e.width * 2, struct.data.dcolor)
         elif len(e.indexes) == 2: # line
             p1 = data.vertices[e.indexes[0]]
             p2 = data.vertices[e.indexes[1]]
-            wnd.draw_line(p1, p2, e.width, "black")
+            wnd.draw_line(p1, p2, e.width, struct.data.lcolor)
         elif len(e.indexes) > 2: # polygon
             points = [data.vertices[i] for i in e.indexes]
-            wnd.draw_polygon(points, "cyan")
+            wnd.draw_polygon(points, struct.data.pcolor)
         else:
             Log.warning(f"empty indexes")
 

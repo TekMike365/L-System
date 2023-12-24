@@ -9,3 +9,5 @@ rules
     Y -> f-F+X+F-fY
 
 angle 60
+{col #ffaaaa
+Fcol #0000FF

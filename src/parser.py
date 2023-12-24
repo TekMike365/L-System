@@ -9,6 +9,10 @@ class ParserData:
         self.axiom = ""
         self.rules = {}
         self.angle = 0.0
+        self.width = 0.0
+        self.lcolor = "#000000"
+        self.pcolor = "#000000"
+        self.dcolor = "#000000"
         self.winc = 0.0
         self.ainc = 0.0
         self.lfac = 0.0
@@ -18,6 +22,8 @@ class ParserData:
 
 
 def parse(text: str) -> ParserData:
+    NUMBER = "\d+(\.\d+)?"
+    COLOR = "#[0-9a-fA-F]{6}"
     KEYWORD = "axiom|rules|angle|winc|lfac|ainc"
     CHARACTER = "[a-zA-Z+\-|[\]#!@{}<>&()]"
     VARIABLE = "\.[a-zA-Z]\w*"
@@ -45,13 +51,21 @@ def parse(text: str) -> ParserData:
     data.axiom = re.search(f"(axiom) ({CHARACTER}+)", source).group(2)
 
     # settings
-    setting = re.search(f"(angle) (\d+(\.\d+)?)", source)
+    setting = re.search(f"(angle) ({NUMBER})", source)
     data.angle = float(setting.group(2)) if setting is not None else 60.0
-    setting = re.search(f"(winc) (\d+(\.\d+)?)", source)
+    setting = re.search(f"(width) ({NUMBER})", source)
+    data.width = float(setting.group(2)) if setting is not None else 3.0
+    setting = re.search(f"(Fcol) ({COLOR})", source)
+    data.lcolor = setting.group(2) if setting is not None else "#000000"
+    setting = re.search(f"({{col) ({COLOR})", source)
+    data.pcolor = setting.group(2) if setting is not None else "#0000ff"
+    setting = re.search(f"(@col) ({COLOR})", source)
+    data.dcolor = setting.group(2) if setting is not None else "#00ff00"
+    setting = re.search(f"(winc) ({NUMBER})", source)
     data.winc = float(setting.group(2)) if setting is not None else 0.0
-    setting = re.search(f"(ainc) (\d+(\.\d+)?)", source)
+    setting = re.search(f"(ainc) ({NUMBER})", source)
     data.ainc = float(setting.group(2)) if setting is not None else 0.0
-    setting = re.search(f"(lfac) (\d+(\.\d+)?)", source)
+    setting = re.search(f"(lfac) ({NUMBER})", source)
     data.lfac = float(setting.group(2)) if setting is not None else 1.0
 
     # rules
