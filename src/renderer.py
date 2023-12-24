@@ -55,7 +55,6 @@ def generate_renderdata(struct: Structure) -> RenderData:
 
         if cmd == "F": # move forward without drawing
             if polygon:
-                print(indexes_data[-1].indexes)
                 indexes_data[-1].indexes.append(curr_pos)
                 continue
             indexes_data.append(IndexData(data["width"], [prev_pos, curr_pos]))
