@@ -55,6 +55,7 @@ def generate_renderdata(struct: Structure) -> RenderData:
 
         if cmd == "F": # move forward without drawing
             if polygon:
+                print(indexes_data[-1].indexes)
                 indexes_data[-1].indexes.append(curr_pos)
                 continue
             indexes_data.append(IndexData(data["width"], [prev_pos, curr_pos]))
@@ -85,8 +86,7 @@ def generate_renderdata(struct: Structure) -> RenderData:
             indexes_data.append(IndexData(data["width"], indexes=[curr_pos]))
         elif cmd == "{": # Open a polygon
             polygon = True
-            indexes_data.append(IndexData(data["width"]))
-            indexes_data[-1].indexes.append(curr_pos)
+            indexes_data.append(IndexData(data["width"], [curr_pos]))
         elif cmd == "}": # Close a polygon and fill with color (no setting for now)
             polygon = False
 
