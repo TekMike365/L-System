@@ -1,4 +1,4 @@
-# L-System v0.2
+# L-System v1.0
 
 A small project, visualizer of [fractals](https://en.wikipedia.org/wiki/Fractal) described in [Lindenmayer System](https://en.wikipedia.org/wiki/L-system), hence the name.
 
@@ -90,13 +90,17 @@ axiom F.name+    ; usage
 
 ### Settings
 
-__Settings__ are used to specify how the fractal should be drawn. So far I've implemented these settings.
+__Settings__ are used to specify how the fractal should be drawn.
 
 ```
-angle   ; angle in degrees (+, -)
-winc    ; width increment (#, !)
-lfac    ; line factor (>, <)
-ainc    ; angle increment ('(', ')')
+angle   float   ; angle in degrees (+, -)
+width   float   ; width of of the line
+winc    float   ; width increment (#, !)
+lfac    float   ; line factor (>, <)
+ainc    float   ; angle increment ('(', ')')
+{col    #hex    ; color of polygon
+Fcol    #hex    ; color of line
+@col    #hex    ; color of dot
 ```
 
 Here is how you use them
