@@ -18,30 +18,49 @@ def print_help():
 
 
 E_OK = 0
-E_WRONG_AMOUNT_OF_ARGS = 1
-E_NOT_A_FILE = 2
-E_CANT_OPEN_FILE = 3
-E_WRONG_OPTIONS = 4
+E_NOT_A_FILE = 1
+E_CANT_OPEN_FILE = 2
+E_WRONG_OPTIONS = 3
+E_NO_FILE_GIVEN = 4
 
 
 def get_error_msg(code) -> None:
-    if code == E_WRONG_AMOUNT_OF_ARGS:
-        print_help()
-        return "Expected at least 1 argument got none."
-    elif code == E_NOT_A_FILE:
+    if code == E_NOT_A_FILE:
         return "File doesn't exist."
     elif code == E_CANT_OPEN_FILE:
         return "Couldn't open file."
     elif code == E_WRONG_OPTIONS:
         print_help()
         return "Wrong options."
+    elif code == E_NO_FILE_GIVEN:
+        print_help()
+        return "No file specified"
 
 
 def main(args):
-    if len(args) < 2:
-        return E_WRONG_AMOUNT_OF_ARGS
+    script_path = None
+    complexity = 4
 
-    script_path = args[1]
+    i = 1
+    while i < len(args):
+        if args[i] == "-h":
+            print_help()
+            return E_OK
+        elif args[i] == "-c":
+            i += 1
+            if i > len(args) - 1:
+                return E_WRONG_OPTIONS
+            try:
+                complexity = int(args[i])
+            except:
+                return E_WRONG_OPTIONS
+        else:
+            script_path = args[i]
+
+        i += 1
+
+    if script_path is None:
+        return E_NO_FILE_GIVEN
 
     if not path.isfile(script_path):
         return E_NOT_A_FILE
@@ -51,22 +70,6 @@ def main(args):
 
     if source == None:
         return E_CANT_OPEN_FILE
-
-    # command options
-    complexity = 4
-
-    if len(args) > 2:
-        i = 2
-        while i < len(args):
-            if args[i] == "-h":
-                print_help()
-                return E_OK
-            elif args[i] == "-c":
-                i += 1
-                if i > len(args) - 1:
-                    return E_WRONG_OPTIONS
-                complexity = int(args[i])
-            i += 1
 
     data = parse(source)
     structure = generate_structure(data, complexity)
