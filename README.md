@@ -134,8 +134,8 @@ lfac 0.72
 python3 lsys.py <script.lsys>
 ```
 
-Requires tkinter.
+Requires tkinter and colorama.
 
 ```shell
-pip install tk
+pip install tk colorama
 ```
